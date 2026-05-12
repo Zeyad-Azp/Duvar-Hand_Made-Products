@@ -1,0 +1,119 @@
+@{
+  ViewData["Title"] = "Contact";
+}
+
+<section class="page-hero">
+  <div class="container">
+    <nav aria-label="breadcrumb" class="duvar-breadcrumb mb-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item active">Contact</li>
+      </ol>
+    </nav>
+    <div class="section-label">Get in Touch</div>
+    <h1 class="page-hero-title">Contact <em>the Studio</em></h1>
+  </div>
+</section>
+
+<section class="py-section">
+  <div class="container">
+    <div class="row gy-5">
+
+      <div class="col-lg-5">
+        <div class="section-label">Studio Details</div>
+        <h2 class="section-title mb-4">We'd love to <em>hear from you</em></h2>
+        <p style="color:var(--brown-dark);font-size:1rem;line-height:1.9;font-weight:300;margin-bottom:2.5rem;">
+          Whether you have a question about a piece, are interested in a custom order, or simply want to say hello —
+          our studio door is always open.
+        </p>
+      </div>
+
+      <div class="col-lg-6 offset-lg-1">
+        
+        @if (TempData["ContactSuccess"] != null)
+        {
+          <div style="background:var(--ivory);border:1.5px solid var(--tan);border-radius:var(--radius-md);padding:1.5rem 1.8rem;margin-bottom:2rem;display:flex;gap:1rem;align-items:flex-start;">
+            <i class="bi bi-check-circle-fill" style="color:var(--tan);font-size:1.4rem;flex-shrink:0;"></i>
+            <div>
+              <div style="font-family:var(--font-display);font-size:1.1rem;margin-bottom:.2rem;">Message Sent</div>
+              <p style="font-size:.9rem;color:var(--brown-dark);margin:0;">@TempData["ContactSuccess"]</p>
+            </div>
+          </div>
+        }
+
+        <div class="social-wrapper">
+
+            <a href="https://www.instagram.com/duvar_ry?igsh=MWZ0dmc5cGRqd3ltNQ%3D%3D"
+               target="_blank"
+               class="social-link">
+                <div class="social-card-modern">
+                    <div class="social-left">
+                        <div class="social-circle instagram">
+                            <i class="bi bi-instagram"></i>
+                        </div>
+                        <div>
+                            <div class="social-title">Instagram</div>
+                            <div class="social-user">@@duvar_ry</div>
+                        </div>
+                    </div>
+                    <i class="bi bi-arrow-up-right"></i>
+                </div>
+            </a>
+
+            <a href="https://www.facebook.com/rahmayh/?utm_source=ig&utm_medium=social&utm_content=link_in_bio"
+               target="_blank"
+               class="social-link">
+                <div class="social-card-modern">
+                    <div class="social-left">
+                        <div class="social-circle facebook">
+                            <i class="bi bi-facebook"></i>
+                        </div>
+                        <div>
+                            <div class="social-title">Facebook</div>
+                            <div class="social-user">Duvar Handmade</div>
+                        </div>
+                    </div>
+                    <i class="bi bi-arrow-up-right"></i>
+                </div>
+            </a>
+
+            <a href="https://www.tiktok.com/@@duvar_ry"
+               target="_blank"
+               class="social-link">
+                <div class="social-card-modern">
+                    <div class="social-left">
+                        <div class="social-circle tiktok">
+                            <i class="bi bi-tiktok"></i>
+                        </div>
+                        <div>
+                            <div class="social-title">TikTok</div>
+                            <div class="social-user">@@duvar_ry</div>
+                        </div>
+                    </div>
+                    <i class="bi bi-arrow-up-right"></i>
+                </div>
+            </a>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+      <!-- Right: Form -->
+      <div class="col-lg-6 offset-lg-1">
+        @if (TempData["ContactSuccess"] != null)
+        {
+          <div style="background:var(--ivory);border:1.5px solid var(--tan);border-radius:var(--radius-md);padding:1.5rem 1.8rem;margin-bottom:2rem;display:flex;gap:1rem;align-items:flex-start;">
+            <i class="bi bi-check-circle-fill" style="color:var(--tan);font-size:1.4rem;flex-shrink:0;"></i>
+            <div>
+              <div style="font-family:var(--font-display);font-size:1.1rem;margin-bottom:.2rem;">Message Sent</div>
+              <p style="font-size:.9rem;color:var(--brown-dark);margin:0;">@TempData["ContactSuccess"]</p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>

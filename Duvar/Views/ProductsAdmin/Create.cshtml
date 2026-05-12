@@ -1,0 +1,376 @@
+@model ProductFormViewModel
+@{
+  ViewData["Title"] = "New Product";
+  Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="mb-4">
+  <a href="/my-admin/products" class="admin-back-link">
+    <i class="bi bi-arrow-left"></i> Back to Products
+  </a>
+</div>
+
+<div class="row g-4">
+
+  <!-- ══ LEFT: Form ══════════════════════════════════════════════ -->
+  <div class="col-lg-7">
+    <div class="admin-form-card">
+      <h3 class="admin-form-title">Create New Product</h3>
+
+      <form id="product-form"
+            asp-area="Admin" asp-controller="ProductsAdmin" asp-action="Create"
+            method="post" enctype="multipart/form-data">
+
+        @Html.AntiForgeryToken()
+
+        <!-- Hidden: the filename the user picks as main -->
+        <input type="hidden" id="main-image-filename" name="MainImageFileName" />
+
+        <!-- Product Name -->
+        <div class="mb-4">
+          <label asp-for="Name" class="form-label">Product Name *</label>
+          <input asp-for="Name" class="form-control" placeholder="e.g. Bohemian Wall Hanging" />
+          <span asp-validation-for="Name" class="field-error"></span>
+        </div>
+
+        <!-- Category -->
+        <div class="mb-4">
+          <label asp-for="CategoryId" class="form-label">Category *</label>
+          <select asp-for="CategoryId" class="form-select"
+                  asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
+            <option value="">— Select a category —</option>
+          </select>
+          <span asp-validation-for="CategoryId" class="field-error"></span>
+        </div>
+
+        <!-- Price -->
+        <div class="mb-4">
+          <label asp-for="Price" class="form-label">Price (USD) *</label>
+          <div class="input-group">
+            <span class="input-group-text admin-input-prefix">$</span>
+            <input asp-for="Price" type="number" step="0.01" min="0"
+                   class="form-control" placeholder="0.00" />
+          </div>
+          <span asp-validation-for="Price" class="field-error"></span>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-4">
+          <label asp-for="Description" class="form-label">Description</label>
+          <textarea asp-for="Description" class="form-control" rows="5"
+                    placeholder="Describe this piece — materials, dimensions, crafting process…"></textarea>
+          <span asp-validation-for="Description" class="field-error"></span>
+        </div>
+
+        <!-- ══ IMAGE UPLOAD ZONE ══════════════════════════════════ -->
+        <div class="mb-4">
+          <label class="form-label">Product Images *</label>
+
+          <!-- Step hint -->
+          <div class="upload-steps">
+            <div class="upload-step">
+              <span class="step-num">1</span>
+              <span>Click the area below to choose images (multiple allowed)</span>
+            </div>
+            <div class="upload-step">
+              <span class="step-num">2</span>
+              <span>Previews appear — <strong>click any thumbnail</strong> to set it as the Main listing image</span>
+            </div>
+            <div class="upload-step">
+              <span class="step-num">3</span>
+              <span>Hover a thumbnail and click <i class="bi bi-x-circle-fill" style="color:#d97070;"></i> to remove it before saving</span>
+            </div>
+          </div>
+
+          <!-- Drop zone -->
+          <div id="upload-zone" class="upload-dropzone" role="button" tabindex="0"
+               aria-label="Click or drag to upload product images">
+            <i class="bi bi-cloud-arrow-up upload-zone-icon"></i>
+            <p class="upload-zone-label">
+              <strong>Click to browse</strong> or drag &amp; drop images here
+            </p>
+            <p class="upload-zone-sub">JPG · PNG · WebP · GIF &nbsp;—&nbsp; max 10 MB each</p>
+          </div>
+
+          <!-- Hidden real input -->
+          <input type="file" id="product-images-input" name="NewImages"
+                 accept="image/jpeg,image/png,image/webp,image/gif"
+                 multiple style="display:none;" />
+
+          <!-- Error feedback -->
+          <div id="upload-error" class="upload-error" style="display:none;"></div>
+          <span asp-validation-for="NewImages" class="field-error"></span>
+
+          <!-- Counter -->
+          <div id="upload-counter" class="upload-counter" style="display:none;">
+            <i class="bi bi-images me-1"></i>
+            <span id="counter-text"></span>
+            &nbsp;·&nbsp;
+            <span id="main-label-text" style="color:var(--tan);font-weight:500;"></span>
+          </div>
+
+          <!-- Preview grid -->
+          <div id="product-images-preview" class="upload-preview-grid"></div>
+        </div>
+        <!-- ═══════════════════════════════════════════════════════ -->
+
+        <!-- Actions -->
+        <div class="d-flex gap-3 mt-2">
+          <button type="submit" class="btn-duvar btn-duvar-filled" style="padding:.85rem 2rem;">
+            <i class="bi bi-check2 me-1"></i> Create Product
+          </button>
+          <a href="/my-admin/products" class="btn-duvar" style="padding:.85rem 1.5rem;">
+            Cancel
+          </a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ══ RIGHT: Tips panel ═══════════════════════════════════════ -->
+  <div class="col-lg-5">
+    <div class="tips-panel">
+      <div class="tips-panel-header">
+        <i class="bi bi-lightbulb me-1"></i> Photography Tips
+      </div>
+      <ul class="tips-list">
+        <li>
+          <i class="bi bi-star tips-icon"></i>
+          <span>The image you click as <em>Main</em> is the one shown on product cards and search results.</span>
+        </li>
+        <li>
+          <i class="bi bi-aspect-ratio tips-icon"></i>
+          <span>Square images (1:1 ratio) look best on listing pages — no awkward cropping.</span>
+        </li>
+        <li>
+          <i class="bi bi-sun tips-icon"></i>
+          <span>Shoot in soft, natural window light for a warm, premium look.</span>
+        </li>
+        <li>
+          <i class="bi bi-file-earmark-image tips-icon"></i>
+          <span>Aim for 1000 × 1000 px minimum. JPG or WebP keeps files small without losing quality.</span>
+        </li>
+        <li>
+          <i class="bi bi-collection tips-icon"></i>
+          <span>Upload 3–5 images per product for a rich gallery on the detail page.</span>
+        </li>
+        <li>
+          <i class="bi bi-arrow-repeat tips-icon"></i>
+          <span>Changed your mind? Just click a different thumbnail — the Main badge moves instantly.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Live main image preview box -->
+    <div id="main-preview-box" class="main-preview-box" style="display:none;">
+      <div class="main-preview-label">
+        <i class="bi bi-star-fill me-1" style="color:var(--tan);"></i> Current Main Image
+      </div>
+      <img id="main-preview-img" src="" alt="Main image preview" class="main-preview-img" />
+      <p class="main-preview-hint">This is shown on listing pages &amp; category grids.</p>
+    </div>
+  </div>
+
+</div>
+
+@section Scripts {
+<script>
+(function () {
+  'use strict';
+
+  // ── DOM refs ─────────────────────────────────────────────────
+  const zone         = document.getElementById('upload-zone');
+  const input        = document.getElementById('product-images-input');
+  const preview      = document.getElementById('product-images-preview');
+  const counter      = document.getElementById('upload-counter');
+  const counterText  = document.getElementById('counter-text');
+  const mainLabel    = document.getElementById('main-label-text');
+  const mainHidden   = document.getElementById('main-image-filename');
+  const errorBox     = document.getElementById('upload-error');
+  const mainBox      = document.getElementById('main-preview-box');
+  const mainBoxImg   = document.getElementById('main-preview-img');
+
+  // ── State ────────────────────────────────────────────────────
+  // Each entry: { file, dataUrl, isMain }
+  let fileEntries = [];
+
+  // ── Open file dialog ─────────────────────────────────────────
+  zone.addEventListener('click', () => input.click());
+  zone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') input.click(); });
+
+  // ── Drag & Drop ──────────────────────────────────────────────
+  zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', ()=> zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    mergeFiles(e.dataTransfer.files);
+  });
+
+  // ── File <input> change ──────────────────────────────────────
+  input.addEventListener('change', function () {
+    mergeFiles(this.files);
+    // Reset so same files can be re-selected after removal
+    this.value = '';
+  });
+
+  // ── Merge new files into existing list ───────────────────────
+  function mergeFiles(newFiles) {
+    hideError();
+    const allowed = ['image/jpeg','image/png','image/webp','image/gif'];
+    const maxMB   = 10;
+    const errors  = [];
+
+    Array.from(newFiles).forEach(f => {
+      if (!allowed.includes(f.type)) {
+        errors.push(`"${f.name}" is not a supported image type.`);
+        return;
+      }
+      if (f.size > maxMB * 1024 * 1024) {
+        errors.push(`"${f.name}" exceeds the 10 MB limit.`);
+        return;
+      }
+      // Skip exact duplicates (same name + size)
+      const dup = fileEntries.some(e => e.file.name === f.name && e.file.size === f.size);
+      if (dup) return;
+
+      fileEntries.push({ file: f, dataUrl: null, isMain: false });
+    });
+
+    if (errors.length) showError(errors.join(' '));
+
+    if (!fileEntries.length) return;
+
+    // If no main yet, set first entry as main
+    if (!fileEntries.some(e => e.isMain)) fileEntries[0].isMain = true;
+
+    readAndRender();
+  }
+
+  // ── Read all un-read files, then render ──────────────────────
+  function readAndRender() {
+    const pending = fileEntries.filter(e => !e.dataUrl);
+    let done = 0;
+
+    if (!pending.length) { renderPreviews(); return; }
+
+    pending.forEach(entry => {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        entry.dataUrl = ev.target.result;
+        done++;
+        if (done === pending.length) renderPreviews();
+      };
+      reader.readAsDataURL(entry.file);
+    });
+  }
+
+  // ── Rebuild preview grid from fileEntries ────────────────────
+  function renderPreviews() {
+    preview.innerHTML = '';
+
+    fileEntries.forEach((entry, idx) => {
+      const card = document.createElement('div');
+      card.className = 'up-card' + (entry.isMain ? ' is-main' : '');
+      card.setAttribute('data-idx', idx);
+      card.setAttribute('title', entry.isMain ? 'Main image' : 'Click to set as main');
+
+      card.innerHTML = `
+        <img src="${entry.dataUrl}" alt="${entry.file.name}" class="up-card-img" />
+        <div class="up-card-overlay">
+          <button type="button" class="up-card-remove" aria-label="Remove image" data-idx="${idx}">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="up-card-badge ${entry.isMain ? 'badge-main' : 'badge-set'}">
+          ${entry.isMain
+            ? '<i class="bi bi-star-fill me-1"></i>Main'
+            : '<i class="bi bi-star me-1"></i>Set as Main'}
+        </div>
+      `;
+
+      // Click card body → set as main
+      card.addEventListener('click', e => {
+        if (e.target.closest('.up-card-remove')) return;
+        setMain(idx);
+      });
+
+      // Remove button
+      card.querySelector('.up-card-remove').addEventListener('click', e => {
+        e.stopPropagation();
+        removeEntry(idx);
+      });
+
+      preview.appendChild(card);
+    });
+
+    syncHiddenInput();
+    updateCounter();
+    updateMainBox();
+    rebuildFileInput();
+  }
+
+  // ── Set a given index as main ────────────────────────────────
+  function setMain(idx) {
+    fileEntries.forEach((e, i) => e.isMain = i === idx);
+    renderPreviews();
+  }
+
+  // ── Remove an entry ──────────────────────────────────────────
+  function removeEntry(idx) {
+    fileEntries.splice(idx, 1);
+    // If we removed the main, make first remaining one main
+    if (fileEntries.length && !fileEntries.some(e => e.isMain))
+      fileEntries[0].isMain = true;
+    renderPreviews();
+  }
+
+  // ── Sync hidden input with the main filename ─────────────────
+  function syncHiddenInput() {
+    const mainEntry = fileEntries.find(e => e.isMain);
+    mainHidden.value = mainEntry ? mainEntry.file.name : '';
+  }
+
+  // ── Rebuild the real <input type=file> DataTransfer ─────────
+  // (so the form POST actually sends the right files)
+  function rebuildFileInput() {
+    const dt = new DataTransfer();
+    fileEntries.forEach(e => dt.items.add(e.file));
+    input.files = dt.files;
+  }
+
+  // ── Counter bar ──────────────────────────────────────────────
+  function updateCounter() {
+    if (!fileEntries.length) { counter.style.display = 'none'; return; }
+    counter.style.display = 'flex';
+    const n = fileEntries.length;
+    counterText.textContent = `${n} image${n > 1 ? 's' : ''} selected`;
+    const m = fileEntries.find(e => e.isMain);
+    mainLabel.textContent = m ? `Main: ${truncate(m.file.name, 28)}` : '';
+  }
+
+  // ── Live main preview sidebar box ───────────────────────────
+  function updateMainBox() {
+    const m = fileEntries.find(e => e.isMain);
+    if (!m) { mainBox.style.display = 'none'; return; }
+    mainBox.style.display = 'block';
+    mainBoxImg.src = m.dataUrl;
+  }
+
+  // ── Error helpers ─────────────────────────────────────────────
+  function showError(msg) {
+    errorBox.textContent = msg;
+    errorBox.style.display = 'block';
+  }
+  function hideError() {
+    errorBox.style.display = 'none';
+    errorBox.textContent   = '';
+  }
+
+  function truncate(str, len) {
+    return str.length > len ? str.slice(0, len - 1) + '…' : str;
+  }
+})();
+</script>
+}

@@ -1,0 +1,183 @@
+@model ProductDetailsViewModel
+@{
+  ViewData["Title"] = Model.Product.Name;
+  var allImageSrcs = string.Join(",", Model.Images.Select(i => $"'{i.ImagePath}'"));
+}
+
+<section class="py-section-sm bg-cream">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="duvar-breadcrumb mb-4">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item"><a asp-controller="Products" asp-action="Index">Products</a></li>
+        @if (Model.Product.Category != null)
+        {
+          <li class="breadcrumb-item">
+            <a asp-controller="Products" asp-action="Index" asp-route-categoryId="@Model.Product.CategoryId">@Model.Product.Category.Name</a>
+          </li>
+        }
+        <li class="breadcrumb-item active">@Model.Product.Name</li>
+      </ol>
+    </nav>
+
+    <div class="row g-5 align-items-start">
+
+      <!-- ── Gallery Column ─── -->
+      <div class="col-lg-6 col-xl-7">
+        <!-- Main Image -->
+        <div style="position:relative;">
+          @if (!string.IsNullOrEmpty(Model.MainImage?.ImagePath))
+          {
+            <img id="product-main-img"
+                 src="@Model.MainImage.ImagePath"
+                 alt="@Model.Product.Name"
+                 class="product-detail-main-img"
+                 data-lightbox-single="@Model.MainImage.ImagePath"
+                 style="cursor:zoom-in;" />
+          }
+          else
+          {
+            <div style="width:100%;aspect-ratio:1/1;border-radius:var(--radius-xl);background:var(--ivory);display:flex;align-items:center;justify-content:center;font-size:5rem;color:var(--beige);">
+              <i class="bi bi-image"></i>
+            </div>
+          }
+          <!-- Zoom hint -->
+          <div style="position:absolute;bottom:1rem;right:1rem;background:rgba(250,247,242,.85);backdrop-filter:blur(8px);border-radius:50px;padding:.35rem .8rem;font-size:.72rem;letter-spacing:.08em;color:var(--brown-light);">
+            <i class="bi bi-zoom-in me-1"></i>Click to zoom
+          </div>
+        </div>
+
+        <!-- Thumbnails -->
+        @if (Model.Images.Count > 1)
+        {
+          <div class="product-thumb-wrap">
+            @{int idx = 0;}
+            @foreach (var img in Model.Images)
+            {
+              <img class="product-thumb @(img.IsMainImage ? "active" : "")"
+                   src="@img.ImagePath"
+                   data-src="@img.ImagePath"
+                   data-lightbox="@img.ImagePath"
+                   alt="View @(idx + 1)"
+                   loading="lazy"
+                   style="cursor:pointer;" />
+              idx++;
+            }
+          </div>
+        }
+      </div>
+
+      <!-- ── Info Column ─── -->
+      <div class="col-lg-6 col-xl-5">
+        <div style="position:sticky;top:6rem;">
+          <!-- Category Badge -->
+          @if (Model.Product.Category != null)
+          {
+            <a asp-controller="Products" asp-action="Index" asp-route-categoryId="@Model.Product.CategoryId"
+               class="product-detail-cat-badge mb-3 d-inline-block text-decoration-none">
+              @Model.Product.Category.Name
+            </a>
+          }
+
+          <h1 style="font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:300;line-height:1.1;color:var(--espresso);margin-bottom:1rem;">
+            @Model.Product.Name
+          </h1>
+
+          <div class="product-detail-price mb-4">
+            $@Model.Product.Price.ToString("0.00")
+          </div>
+
+          <div class="section-divider"></div>
+
+          @if (!string.IsNullOrEmpty(Model.Product.Description))
+          {
+            <p class="product-detail-desc mb-4">@Model.Product.Description</p>
+          }
+
+          <div class="section-divider"></div>
+
+          <!-- Artisan note -->
+          <div style="background:var(--ivory);border-radius:var(--radius-md);padding:1.2rem 1.4rem;border:1px solid var(--beige);">
+            <div style="font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--tan);margin-bottom:.5rem;">
+              <i class="bi bi-hand-index-thumb me-1"></i>Artisan Note
+            </div>
+            <p style="font-size:.88rem;color:var(--brown-dark);line-height:1.7;margin:0;">
+              This piece is crafted entirely by hand. Slight variations in texture and tone are a natural mark of artisan craft — each object is uniquely yours.
+            </p>
+          </div>
+
+          <!-- Inquiry CTA -->
+          <div class="mt-4 d-flex gap-3 flex-wrap">
+            <a asp-controller="Contact" asp-action="Index" class="btn-duvar btn-duvar-filled flex-grow-1 justify-content-center">
+              <i class="bi bi-envelope me-1"></i>Enquire About This Piece
+            </a>
+            <a asp-controller="Products" asp-action="Index" asp-route-categoryId="@Model.Product.CategoryId" class="btn-duvar" style="padding:.85rem 1.2rem;">
+              <i class="bi bi-arrow-left"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Related Products ══════════════════════════════════════ -->
+@if (Model.RelatedProducts.Any())
+{
+  <section class="py-section" style="background:var(--ivory);">
+    <div class="container">
+      <div class="row mb-4">
+        <div class="col">
+          <div class="section-label">You may also like</div>
+          <h2 class="section-title">Related <em>Pieces</em></h2>
+        </div>
+      </div>
+      <div class="row g-4">
+        @foreach (var rel in Model.RelatedProducts)
+        {
+          <div class="col-6 col-lg-3">
+            <a asp-controller="Products" asp-action="Details" asp-route-id="@rel.Id" class="d-block text-decoration-none">
+              <div class="product-card">
+                <div class="product-card-img-wrap">
+                  @if (!string.IsNullOrEmpty(rel.MainImagePath))
+                  {
+                    <img class="product-card-img" src="@rel.MainImagePath" alt="@rel.Name" loading="lazy" />
+                  }
+                  else
+                  {
+                    <div class="product-card-placeholder"><i class="bi bi-image"></i></div>
+                  }
+                </div>
+                <div class="product-card-body">
+                  <div class="product-card-name">@rel.Name</div>
+                  <div class="product-card-price">$@rel.Price.ToString("0.00")</div>
+                </div>
+              </div>
+            </a>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+}
+
+@section Scripts {
+<script>
+  // Connect thumbnail gallery to lightbox array
+  document.addEventListener('DOMContentLoaded', () => {
+    const thumbs = document.querySelectorAll('[data-lightbox]');
+    const mainImg = document.getElementById('product-main-img');
+
+    if (mainImg && thumbs.length > 1) {
+      mainImg.addEventListener('click', () => {
+        const srcs = Array.from(thumbs).map(t => t.dataset.lightbox);
+        const activeSrc = mainImg.src;
+        const idx = srcs.findIndex(s => activeSrc.endsWith(s.replace(/^\//, ''))) || 0;
+        window.openLightbox(srcs, Math.max(0, idx));
+      });
+    }
+  });
+</script>
+}

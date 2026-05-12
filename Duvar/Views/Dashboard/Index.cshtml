@@ -1,0 +1,130 @@
+﻿@model DashboardViewModel
+@{
+  ViewData["Title"] = "Dashboard";
+  Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- Stat Cards -->
+<div class="row g-4 mb-5">
+  <div class="col-sm-6 col-xl-3">
+    <div class="admin-stat-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;">
+        <div style="width:44px;height:44px;background:var(--ivory);border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--beige);">
+          <i class="bi bi-folder2" style="color:var(--tan);font-size:1.1rem;"></i>
+        </div>
+        <span style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--brown-light);">Total</span>
+      </div>
+      <div class="admin-stat-value">@Model.TotalCategories</div>
+      <div class="admin-stat-label">Categories</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="admin-stat-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;">
+        <div style="width:44px;height:44px;background:var(--ivory);border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--beige);">
+          <i class="bi bi-box-seam" style="color:var(--tan);font-size:1.1rem;"></i>
+        </div>
+        <span style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--brown-light);">Total</span>
+      </div>
+      <div class="admin-stat-value">@Model.TotalProducts</div>
+      <div class="admin-stat-label">Products</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="admin-stat-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;">
+        <div style="width:44px;height:44px;background:var(--ivory);border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--beige);">
+          <i class="bi bi-image" style="color:var(--tan);font-size:1.1rem;"></i>
+        </div>
+        <span style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--brown-light);">Recent</span>
+      </div>
+      <div class="admin-stat-value">@Model.LatestProducts.Count</div>
+      <div class="admin-stat-label">New Products</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="admin-stat-card" style="background:var(--espresso);border-color:transparent;">
+      <div style="margin-bottom:.8rem;">
+        <div style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tan);">Quick Action</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.6rem;">
+        <a href="/my-admin/products/create" style="display:flex;align-items:center;gap:.6rem;background:rgba(196,168,130,.15);color:var(--cream);padding:.6rem .9rem;border-radius:8px;font-size:.8rem;text-decoration:none;transition:background .2s;">
+          <i class="bi bi-plus-circle"></i> Add Product
+        </a>
+        <a href="/my-admin/categories/create" style="display:flex;align-items:center;gap:.6rem;background:rgba(196,168,130,.15);color:var(--cream);padding:.6rem .9rem;border-radius:8px;font-size:.8rem;text-decoration:none;">
+          <i class="bi bi-folder-plus"></i> Add Category
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Latest Products Table -->
+<div class="mb-3 d-flex align-items-center justify-content-between">
+  <h3 style="font-family:var(--font-display);font-size:1.4rem;font-weight:900;color:var(--espresso);margin:0;">
+    Latest Products
+  </h3>
+  <a href="/my-admin/products" style="font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brown-light);text-decoration:none;">
+    View all <i class="bi bi-arrow-right"></i>
+  </a>
+</div>
+
+<div class="admin-table">
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Product Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (!Model.LatestProducts.Any())
+      {
+        <tr>
+          <td colspan="5" class="text-center" style="padding:2.5rem;color:var(--brown-light);">
+            No products yet. <a href="/my-admin/products/create">Add the first one →</a>
+          </td>
+        </tr>
+      }
+      @foreach (var product in Model.LatestProducts)
+      {
+        <tr>
+          <td>
+            @if (!string.IsNullOrEmpty(product.MainImagePath))
+            {
+              <img src="@product.MainImagePath" alt="@product.Name" />
+            }
+            else
+            {
+              <div style="width:52px;height:52px;background:var(--ivory);border-radius:6px;display:flex;align-items:center;justify-content:center;">
+                <i class="bi bi-image" style="color:var(--tan);"></i>
+              </div>
+            }
+          </td>
+          <td style="font-weight:400;">@product.Name</td>
+          <td>
+            <span style="font-size:.75rem;letter-spacing:.08em;background:var(--ivory);padding:.25rem .65rem;border-radius:50px;color:var(--brown-dark);">
+              @product.Category?.Name
+            </span>
+          </td>
+          <td style="font-family:var(--font-display);font-size:1rem;color:var(--brown);">
+            $@product.Price.ToString("0.00")
+          </td>
+          <td>
+            <a href="/my-admin/products/edit/@product.Id"
+               style="font-size:.8rem;color:var(--brown-light);text-decoration:none;margin-right:.8rem;">
+              <i class="bi bi-pencil"></i> Edit
+            </a>
+            <a href="/Products/Details/@product.Id" target="_blank"
+               style="font-size:.8rem;color:var(--brown-light);text-decoration:none;">
+              <i class="bi bi-eye"></i> View
+            </a>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

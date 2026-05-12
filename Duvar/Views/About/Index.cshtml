@@ -1,0 +1,90 @@
+@{
+  ViewData["Title"] = "About";
+}
+
+<section class="page-hero">
+  <div class="container">
+    <nav aria-label="breadcrumb" class="duvar-breadcrumb mb-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item active">About</li>
+      </ol>
+    </nav>
+    <div class="section-label">Our Story</div>
+    <h1 class="page-hero-title">About <em>Duvar</em></h1>
+  </div>
+</section>
+
+<section class="py-section">
+  <div class="container">
+    <div class="row align-items-center gy-5 mb-section">
+      <div class="col-lg-6">
+        <div class="section-label">The Beginning</div>
+        <h2 class="section-title mb-4">A studio born of <em>quiet craft</em></h2>
+        <p style="color:var(--brown-dark);font-size:1.05rem;line-height:1.9;margin-bottom:1.5rem;font-weight:300;">
+          Duvar began in a small, sunlit workshop in Istanbul — the word itself meaning <em>"wall"</em> in Turkish,
+          a nod to the wall hangings that started it all. What began as a personal obsession with macramé
+          slowly evolved into a full atelier dedicated to handmade objects for the home.
+        </p>
+        <p style="color:var(--brown-dark);font-size:1.05rem;line-height:1.9;font-weight:300;">
+          Every piece in our collection is crafted from natural materials — unbleached cotton, raw linen,
+          hand-thrown clay, and pure beeswax — shaped slowly by hand and finished with care. No two pieces
+          are identical. Each carries the quiet mark of the hands that made it.
+        </p>
+      </div>
+      <div class="col-lg-5 offset-lg-1">
+      <div style="border-radius:var(--radius-xl); overflow:hidden; aspect-ratio:4/5;">
+        <img src="~/images/studio-work.jpg" 
+             alt="Our Studio" 
+             style="width:100%; height:100%; object-fit:cover;" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Values -->
+<section class="py-section bg-ivory">
+  <div class="container">
+    <div class="row mb-5 justify-content-center text-center">
+      <div class="col-lg-6">
+        <div class="section-label mx-auto" style="justify-content:center;">What we stand for</div>
+        <h2 class="section-title">Our <em>Values</em></h2>
+      </div>
+    </div>
+    <div class="row g-4">
+      @{
+        var values = new[]
+        {
+          ("bi-hourglass-split", "Slowness", "We believe the most beautiful things take time. We never rush a piece."),
+          ("bi-tree", "Natural Materials", "We work exclusively with natural, sustainable materials — no synthetics, no shortcuts."),
+          ("bi-hand-index-thumb", "Handmade Always", "Every stitch, knot, and pinch is made by hand. No machines. No shortcuts. Just craft."),
+          ("bi-house-heart", "Home as Sanctuary", "We believe your home should be a space of calm beauty. Our objects are designed to belong there."),
+        };
+      }
+      @foreach (var (icon, title, desc) in values)
+      {
+        <div class="col-sm-6 col-lg-3">
+          <div style="background:var(--warm-white);border-radius:var(--radius-lg);padding:2rem 1.5rem;text-align:center;height:100%;box-shadow:var(--shadow-xs);border:1px solid var(--beige);">
+            <div class="pillar-icon mx-auto mb-2">
+              <i class="bi @icon" style="color:var(--tan);font-size:1.3rem;"></i>
+            </div>
+            <h4 style="font-family:var(--font-display);font-size:1.2rem;margin-bottom:.6rem;">@title</h4>
+            <p style="font-size:.88rem;color:var(--brown-light);line-height:1.7;margin:0;">@desc</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="brand-strip">
+  <div class="container text-center">
+    <h2 style="color:var(--cream);font-weight:300;font-family:var(--font-display);font-size:clamp(2rem,5vw,3.5rem);margin-bottom:1.5rem;">
+      Discover the <em style="color:var(--beige);">collection</em>
+    </h2>
+    <a asp-controller="Products" asp-action="Index" class="btn-duvar" style="border-color:rgba(232,213,183,.4);color:var(--cream);">
+      Browse All Products <i class="bi bi-arrow-right"></i>
+    </a>
+  </div>
+</section>

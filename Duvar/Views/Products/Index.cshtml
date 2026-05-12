@@ -1,0 +1,77 @@
+@model ProductListViewModel
+@{
+  ViewData["Title"] = Model.SelectedCategoryName ?? "Products";
+}
+
+<section class="page-hero">
+  <div class="container">
+    <nav aria-label="breadcrumb" class="duvar-breadcrumb mb-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        @if (!string.IsNullOrEmpty(Model.SelectedCategoryName))
+        {
+          <li class="breadcrumb-item"><a asp-controller="Categories" asp-action="Index">Categories</a></li>
+          <li class="breadcrumb-item active">@Model.SelectedCategoryName</li>
+        }
+        else
+        {
+          <li class="breadcrumb-item active">Products</li>
+        }
+      </ol>
+    </nav>
+    <div class="section-label">Our Works</div>
+    <h1 class="page-hero-title">
+      @if (!string.IsNullOrEmpty(Model.SelectedCategoryName))
+      {
+        @Model.SelectedCategoryName
+      }
+      else
+      {
+        <text>All <em>Products</em></text>
+      }
+    </h1>
+  </div>
+</section>
+
+<section class="py-section">
+  <div class="container">
+
+    <!-- Filters Row -->
+    <div class="row align-items-center mb-5 gy-3">
+      <div class="col-lg-7">
+        <div class="d-flex flex-wrap gap-2">
+          <button class="filter-chip @(Model.SelectedCategoryId == null ? "active" : "")" data-category="">
+            All
+          </button>
+          @foreach (var cat in Model.Categories)
+          {
+            <button class="filter-chip @(Model.SelectedCategoryId == cat.Id ? "active" : "")" data-category="@cat.Id">
+              @cat.Name
+            </button>
+          }
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="position-relative">
+          <input id="product-search" type="text"
+                 class="form-control"
+                 placeholder="Search pieces..."
+                 value="@Model.SearchTerm"
+                 style="border:1.5px solid var(--beige);border-radius:50px;padding:.7rem 1.2rem .7rem 3rem;background:var(--warm-white);font-family:var(--font-body);font-size:.9rem;color:var(--espresso);" />
+          <i class="bi bi-search position-absolute" style="left:1.1rem;top:50%;transform:translateY(-50%);color:var(--tan);font-size:.9rem;"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div id="products-loading" style="display:none;justify-content:center;padding:3rem;">
+      <div class="duvar-spinner"></div>
+    </div>
+
+    <!-- Product Grid -->
+    <div id="product-grid">
+      @await Html.PartialAsync("_ProductGrid", Model.Products)
+    </div>
+
+  </div>
+</section>

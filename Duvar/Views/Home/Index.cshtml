@@ -1,0 +1,192 @@
+@model HomeViewModel
+@{
+  ViewData["Title"] = "Home";
+}
+
+<!-- ═══ HERO ═══════════════════════════════════════════════════ -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row align-items-center" style="min-height:90vh;">
+      <div class="col-lg-7 col-xl-6 hero-content">
+        <div class="hero-eyebrow fade-up">Handmade with intention</div>
+        <h1 class="hero-title fade-up fade-up-d1">
+          Objects made<br/> <em>to be loved</em>
+        </h1>
+        <p class="hero-subtitle fade-up fade-up-d2">
+          Each Duvar piece is patiently crafted by hand — where natural materials,
+          time-honoured techniques, and quiet creativity become your everyday ritual.
+        </p>
+        <div class="d-flex gap-3 flex-wrap fade-up fade-up-d3">
+          <a asp-controller="Products" asp-action="Index" class="btn-duvar btn-duvar-filled">
+            Explore Collection <i class="bi bi-arrow-right"></i>
+          </a>
+          <a asp-controller="About" asp-action="Index" class="btn-duvar">
+            Our Story
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BRAND VALUES STRIP ════════════════════════════════════ -->
+<section style="background:var(--ivory);padding:3.5rem 0;border-top:1px solid var(--beige);border-bottom:1px solid var(--beige);">
+  <div class="container">
+    <div class="row gy-4 text-center">
+      <div class="col-6 col-md-3">
+        <div class="pillar-icon mx-auto"><i class="bi bi-hand-index-thumb" style="color:var(--tan);"></i></div>
+        <div style="font-family:var(--font-display);font-size:1.1rem;margin-bottom:.2rem;">Handcrafted</div>
+        <p style="font-size:.82rem;color:var(--brown-light);">Made entirely by hand, one at a time</p>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="pillar-icon mx-auto"><i class="bi bi-tree" style="color:var(--tan);"></i></div>
+        <div style="font-family:var(--font-display);font-size:1.1rem;margin-bottom:.2rem;">Natural Materials</div>
+        <p style="font-size:.82rem;color:var(--brown-light);">Cotton, linen, clay, and beeswax</p>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="pillar-icon mx-auto"><i class="bi bi-gem" style="color:var(--tan);"></i></div>
+        <div style="font-family:var(--font-display);font-size:1.1rem;margin-bottom:.2rem;">One of a Kind</div>
+        <p style="font-size:.82rem;color:var(--brown-light);">Each piece has its own character</p>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="pillar-icon mx-auto"><i class="bi bi-heart" style="color:var(--tan);"></i></div>
+        <div style="font-family:var(--font-display);font-size:1.1rem;margin-bottom:.2rem;">Made with Love</div>
+        <p style="font-size:.82rem;color:var(--brown-light);">Slow, intentional, beautiful craft</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FEATURED CATEGORIES ═══════════════════════════════════ -->
+@if (Model.FeaturedCategories.Any())
+{
+<section class="py-section">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col">
+        <div class="section-label">Collections</div>
+        <h2 class="section-title">Browse by <em>Category</em></h2>
+      </div>
+      <div class="col-auto align-self-end">
+        <a asp-controller="Categories" asp-action="Index" class="btn-duvar" style="font-size:.72rem;padding:.65rem 1.4rem;">
+          All Categories <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+    <div class="row g-4">
+      @foreach (var cat in Model.FeaturedCategories)
+      {
+        <div class="col-6 col-lg-3">
+          <a asp-controller="Products" asp-action="Index" asp-route-categoryId="@cat.Id" class="d-block text-decoration-none">
+            <div class="category-card">
+              @if (!string.IsNullOrEmpty(cat.ImagePath))
+              {
+                <img class="category-card-img" src="@cat.ImagePath" alt="@cat.Name" loading="lazy" />
+              }
+              else
+              {
+                <div class="category-card-placeholder"><i class="bi bi-grid placeholder-icon"></i></div>
+              }
+              <div class="category-card-body">
+                <div class="category-card-name">@cat.Name</div>
+                <div class="category-card-count">@cat.Products.Count piece@(cat.Products.Count != 1 ? "s" : "")</div>
+              </div>
+            </div>
+          </a>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+}
+
+<!-- ═══ BRAND STRIP ════════════════════════════════════════════ -->
+<section class="brand-strip">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <div class="section-label" style="color:var(--tan);">Our Studio</div>
+        <h2>Crafted in a quiet<br/><em style="font-style:italic;color:var(--beige);">Istanbul atelier</em></h2>
+        <p class="mb-4">
+          Duvar was born from a love of slow living and beautiful objects. Every item in our collection
+          is shaped by hand, unhurried and full of intention — designed to bring warmth to your home for years to come.
+        </p>
+        <a asp-controller="About" asp-action="Index" class="btn-duvar" style="border-color:rgba(232,213,183,.4);color:var(--cream);">
+          Read our story <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FEATURED PRODUCTS ═════════════════════════════════════ -->
+@if (Model.FeaturedProducts.Any())
+{
+<section class="py-section bg-cream">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col">
+        <div class="section-label">Selected Works</div>
+        <h2 class="section-title">New <em>Arrivals</em></h2>
+      </div>
+      <div class="col-auto align-self-end">
+        <a asp-controller="Products" asp-action="Index" class="btn-duvar" style="font-size:.72rem;padding:.65rem 1.4rem;">
+          View All <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+    <div class="row g-4">
+      @foreach (var product in Model.FeaturedProducts)
+      {
+        <div class="col-6 col-lg-4">
+          <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="d-block text-decoration-none">
+            <div class="product-card">
+              <div class="product-card-img-wrap">
+                @if (!string.IsNullOrEmpty(product.MainImagePath))
+                {
+                  <img class="product-card-img" src="@product.MainImagePath" alt="@product.Name" loading="lazy" />
+                }
+                else
+                {
+                  <div class="product-card-placeholder"><i class="bi bi-image"></i></div>
+                }
+                @if (product.Category != null)
+                {
+                  <span class="product-card-category-tag">@product.Category.Name</span>
+                }
+              </div>
+              <div class="product-card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <div class="product-card-name">@product.Name</div>
+                    <div class="product-card-price">$@product.Price.ToString("0.00")</div>
+                  </div>
+                  <div class="product-card-arrow ms-2 mt-1"><i class="bi bi-arrow-right"></i></div>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+}
+
+<!-- ═══ CONTACT PREVIEW ════════════════════════════════════════ -->
+<section class="py-section-sm" style="background:var(--ivory);">
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-6">
+        <div class="section-divider mx-auto"></div>
+        <h2 class="section-title mb-3">Custom orders &amp; <em>enquiries</em></h2>
+        <p style="color:var(--brown-light);font-size:.95rem;margin-bottom:2rem;">
+          Looking for something unique? We love working on custom pieces. Get in touch and let's create something together.
+        </p>
+        <a asp-controller="Contact" asp-action="Index" class="btn-duvar btn-duvar-filled">
+          Contact the Studio <i class="bi bi-envelope"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

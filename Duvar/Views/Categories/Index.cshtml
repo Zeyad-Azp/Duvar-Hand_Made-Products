@@ -1,0 +1,62 @@
+@model CategoryListViewModel
+@{
+  ViewData["Title"] = "Categories";
+}
+
+<section class="page-hero">
+  <div class="container">
+    <nav aria-label="breadcrumb" class="duvar-breadcrumb mb-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item active">Categories</li>
+      </ol>
+    </nav>
+    <div class="section-label">Collections</div>
+    <h1 class="page-hero-title">All <em>Categories</em></h1>
+  </div>
+</section>
+
+<section class="py-section">
+  <div class="container">
+    @if (!Model.Categories.Any())
+    {
+      <div class="empty-state">
+        <div class="empty-state-icon"><i class="bi bi-folder2-open"></i></div>
+        <h4>No categories yet</h4>
+        <p style="font-size:.9rem;">Check back soon.</p>
+      </div>
+    }
+    else
+    {
+      <div class="row g-4">
+        @foreach (var cat in Model.Categories)
+        {
+          <div class="col-sm-6 col-lg-4 col-xl-3">
+            <a asp-controller="Products" asp-action="Index" asp-route-categoryId="@cat.Id" class="d-block text-decoration-none">
+              <div class="category-card">
+                @if (!string.IsNullOrEmpty(cat.ImagePath))
+                {
+                  <img class="category-card-img" src="@cat.ImagePath" alt="@cat.Name" loading="lazy" />
+                }
+                else
+                {
+                  <div class="category-card-placeholder">
+                    <i class="bi bi-grid placeholder-icon"></i>
+                  </div>
+                }
+                <div class="category-card-body">
+                  <div class="category-card-name">@cat.Name</div>
+                  <div class="category-card-count">@cat.Products.Count piece@(cat.Products.Count != 1 ? "s" : "")</div>
+                </div>
+              </div>
+            </a>
+          </div>
+          if (!string.IsNullOrEmpty(cat.Description))
+          {
+            <!-- Description on wider cards could be shown here -->
+          }
+        }
+      </div>
+    }
+  </div>
+</section>

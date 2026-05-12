@@ -1,0 +1,36 @@
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+
+## .NET Core / ASP.NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+out/
+appsettings.Development.json
+appsettings.Production.json
+
+## Secrets and Sensitive Data
+secrets.json
+*.pfx
+*.publishsettings
+
+## Publish Output
+publish/
+*.pubxml
+*.pubxml.user
+
+## Database Files
+*.mdf
+*.ldf
+*.db
+*.sqlite
+
+## OS Generated Files
+Thumbs.db
+Desktop.ini
+.DS_Store

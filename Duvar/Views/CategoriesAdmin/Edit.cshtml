@@ -1,0 +1,91 @@
+@model CategoryFormViewModel
+@{
+  ViewData["Title"] = "Edit Category";
+  Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="mb-4">
+  <a href="/my-admin/categories"
+     style="font-size:.8rem;color:var(--brown-light);text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;">
+    <i class="bi bi-arrow-left"></i> Back to Categories
+  </a>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="admin-form-card">
+      <h3 style="font-family:var(--font-display);font-size:1.5rem;font-weight:400;color:var(--espresso);margin-bottom:1.8rem;">
+        Edit: @Model.Name
+      </h3>
+
+      <form asp-area="Admin" asp-controller="CategoriesAdmin" asp-action="Edit" asp-route-id="@Model.Id"
+            method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="CurrentImagePath" />
+
+        <div class="mb-4">
+          <label asp-for="Name" class="form-label">Category Name *</label>
+          <input asp-for="Name" class="form-control" />
+          <span asp-validation-for="Name" class="text-danger" style="font-size:.8rem;"></span>
+        </div>
+
+        <div class="mb-4">
+          <label asp-for="Description" class="form-label">Description</label>
+          <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+          <span asp-validation-for="Description" class="text-danger" style="font-size:.8rem;"></span>
+        </div>
+
+        <div class="mb-5">
+          <label class="form-label">Category Image</label>
+
+          @if (!string.IsNullOrEmpty(Model.CurrentImagePath))
+          {
+            <div class="d-flex align-items-center gap-3 mb-3 p-3"
+                 style="background:var(--ivory);border-radius:10px;border:1px solid var(--beige);">
+              <img src="@Model.CurrentImagePath" alt="Current"
+                   style="width:80px;height:80px;object-fit:cover;border-radius:8px;" />
+              <div>
+                <div style="font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--brown-light);margin-bottom:.3rem;">Current Image</div>
+                <p style="font-size:.82rem;color:var(--brown-dark);margin:0;">Upload a new image below to replace it.</p>
+              </div>
+            </div>
+          }
+
+          <div style="border:2px dashed var(--beige);border-radius:10px;padding:1.5rem;text-align:center;cursor:pointer;"
+               onclick="document.getElementById('cat-image-input').click()">
+            <i class="bi bi-cloud-arrow-up" style="font-size:2rem;color:var(--tan);display:block;margin-bottom:.5rem;"></i>
+            <p style="font-size:.85rem;color:var(--brown-light);margin:0;">
+              @(string.IsNullOrEmpty(Model.CurrentImagePath) ? "Click to upload image" : "Click to replace image")<br/>
+              <span style="font-size:.75rem;">JPG, PNG, WebP — max 10 MB</span>
+            </p>
+          </div>
+          <input type="file" id="cat-image-input" asp-for="ImageFile" accept="image/*"
+                 class="image-file-input" data-preview="cat-image-preview" style="display:none;" />
+          <div id="cat-image-preview" class="admin-img-grid mt-3"></div>
+          <span asp-validation-for="ImageFile" class="text-danger" style="font-size:.8rem;"></span>
+        </div>
+
+        <div class="d-flex gap-3">
+          <button type="submit" class="btn-duvar btn-duvar-filled" style="padding:.8rem 2rem;">
+            <i class="bi bi-check2"></i> Save Changes
+          </button>
+          <a href="/my-admin/categories" class="btn-duvar" style="padding:.8rem 1.5rem;">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+<script>
+  document.getElementById('cat-image-input').addEventListener('change', function() {
+    const area = this.previousElementSibling;
+    if (this.files.length > 0) {
+      area.querySelector('p').innerHTML = `<strong style="color:var(--brown-dark);">${this.files[0].name}</strong><br/><span style="font-size:.75rem;color:var(--brown-light);">Ready to upload</span>`;
+    }
+  });
+</script>
+}

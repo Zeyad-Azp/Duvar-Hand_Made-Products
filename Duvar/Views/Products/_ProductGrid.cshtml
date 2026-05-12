@@ -1,0 +1,47 @@
+@model List<Duvar.DAL.Models.Product>
+
+@if (!Model.Any())
+{
+  <div class="empty-state">
+    <div class="empty-state-icon"><i class="bi bi-inbox"></i></div>
+    <h4>No products found</h4>
+    <p style="font-size:.9rem;color:var(--brown-light);">Try a different category or search term.</p>
+  </div>
+}
+else
+{
+  <div class="row g-4">
+    @foreach (var product in Model)
+    {
+      <div class="col-6 col-lg-4">
+        <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="d-block text-decoration-none">
+          <div class="product-card">
+            <div class="product-card-img-wrap">
+              @if (!string.IsNullOrEmpty(product.MainImagePath))
+              {
+                <img class="product-card-img" src="@product.MainImagePath" alt="@product.Name" loading="lazy" />
+              }
+              else
+              {
+                <div class="product-card-placeholder"><i class="bi bi-image"></i></div>
+              }
+              @if (product.Category != null)
+              {
+                <span class="product-card-category-tag">@product.Category.Name</span>
+              }
+            </div>
+            <div class="product-card-body">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="product-card-name">@product.Name</div>
+                  <div class="product-card-price">$@product.Price.ToString("0.00")</div>
+                </div>
+                <div class="product-card-arrow ms-2 mt-1"><i class="bi bi-arrow-right"></i></div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    }
+  </div>
+}

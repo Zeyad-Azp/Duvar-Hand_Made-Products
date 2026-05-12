@@ -1,0 +1,122 @@
+﻿@model AdminProductListViewModel
+@{
+  ViewData["Title"] = "Products";
+  Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+  <!-- Category Filter -->
+  <form method="get" action="/my-admin/products" class="d-flex gap-2 align-items-center flex-wrap">
+    <select name="categoryId" class="form-select form-select-sm"
+            style="border:1.5px solid var(--beige);border-radius:8px;font-size:.85rem;padding:.5rem 1rem;color:var(--espresso);max-width:200px;"
+            onchange="this.form.submit()">
+      <option value="">All Categories</option>
+      @foreach (var cat in Model.Categories)
+      {
+<option value="@cat.Id" 
+        selected="@(Model.FilterCategoryId == cat.Id ? "selected" : null)">
+    @cat.Name
+</option>      
+      }
+    </select>
+    @if (Model.FilterCategoryId.HasValue)
+    {
+      <a href="/my-admin/products"
+         style="font-size:.78rem;color:var(--brown-light);text-decoration:none;">
+        <i class="bi bi-x-circle"></i> Clear
+      </a>
+    }
+  </form>
+
+  <div class="d-flex align-items-center gap-3">
+    <span style="font-size:.82rem;color:var(--brown-light);">@Model.Products.Count product@(Model.Products.Count != 1 ? "s" : "")</span>
+    <a href="/my-admin/products/create" class="btn-duvar btn-duvar-filled" style="font-size:.78rem;padding:.7rem 1.4rem;">
+      <i class="bi bi-plus-lg"></i> New Product
+    </a>
+  </div>
+</div>
+
+<div class="admin-table">
+  <table class="table mb-0">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Images</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (!Model.Products.Any())
+      {
+        <tr>
+          <td colspan="6" class="text-center" style="padding:3rem;color:var(--brown-light);">
+            No products found. <a href="/my-admin/products/create">Add the first one →</a>
+          </td>
+        </tr>
+      }
+      @foreach (var product in Model.Products)
+      {
+        <tr>
+          <td>
+            @if (!string.IsNullOrEmpty(product.MainImagePath))
+            {
+              <img src="@product.MainImagePath" alt="@product.Name" />
+            }
+            else
+            {
+              <div style="width:52px;height:52px;background:var(--ivory);border-radius:6px;display:flex;align-items:center;justify-content:center;">
+                <i class="bi bi-image" style="color:var(--tan);"></i>
+              </div>
+            }
+          </td>
+          <td>
+            <div style="font-weight:400;font-size:.95rem;">@product.Name</div>
+            @if (!string.IsNullOrEmpty(product.Description))
+            {
+              <div style="font-size:.78rem;color:var(--brown-light);margin-top:.15rem;">
+                @(product.Description.Length > 60 ? product.Description[..60] + "…" : product.Description)
+              </div>
+            }
+          </td>
+          <td>
+            <span style="font-size:.75rem;letter-spacing:.08em;background:var(--ivory);padding:.25rem .65rem;border-radius:50px;color:var(--brown-dark);">
+              @product.Category?.Name
+            </span>
+          </td>
+          <td style="font-family:var(--font-display);font-size:1rem;color:var(--brown);">
+            $@product.Price.ToString("0.00")
+          </td>
+          <td>
+            <span style="font-size:.78rem;color:var(--brown-light);">
+              <i class="bi bi-images me-1"></i>@product.Images.Count
+            </span>
+          </td>
+          <td>
+            <div class="d-flex gap-2 flex-wrap">
+              <a href="/my-admin/products/edit/@product.Id"
+                 style="display:inline-flex;align-items:center;gap:.3rem;font-size:.78rem;color:var(--brown-dark);text-decoration:none;background:var(--ivory);padding:.35rem .75rem;border-radius:6px;border:1px solid var(--beige);">
+                <i class="bi bi-pencil"></i> Edit
+              </a>
+              <a href="/Products/Details/@product.Id" target="_blank"
+                 style="display:inline-flex;align-items:center;gap:.3rem;font-size:.78rem;color:var(--brown-light);text-decoration:none;background:var(--ivory);padding:.35rem .75rem;border-radius:6px;border:1px solid var(--beige);">
+                <i class="bi bi-eye"></i>
+              </a>
+              <form action="/my-admin/products/delete/@product.Id" method="post"
+                    onsubmit="return confirm('Delete \'@product.Name\'? This cannot be undone.');"
+                    style="margin:0;">
+                @Html.AntiForgeryToken()
+                <button type="submit"
+                        style="display:inline-flex;align-items:center;gap:.3rem;font-size:.78rem;color:#9b3a3a;background:rgba(155,58,58,.07);padding:.35rem .75rem;border-radius:6px;border:1px solid rgba(155,58,58,.15);cursor:pointer;font-family:inherit;">
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
