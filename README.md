@@ -5,7 +5,7 @@
 ## 🚀 Key Features
 - **Product Management:** Organize products with categories, detailed descriptions, and multi-image support.
 - **Admin Dashboard:** A robust backend interface for managing inventory, categories, and site settings.
-- **Secure Authentication:** Implements JWT-based security and password hashing using BCrypt.
+- **Secure Authentication:** Implements Identity-based security and password hashing using BCrypt.
 - **Auto-Seeding System:** Automatic database migration and administrator account creation on initial startup via a custom `DbSeeder`.
 - **Responsive UI:** A modern, mobile-friendly interface featuring a custom **Dark Mode** for a premium aesthetic.
 
